@@ -1,4 +1,3 @@
-// src/auth/index.ts
 export const getToken = () => {
     return localStorage.getItem('access_token');
   };
