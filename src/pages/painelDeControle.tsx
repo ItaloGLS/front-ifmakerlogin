@@ -3,11 +3,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getToken, logout } from '../auth';
 import { Reserva } from '../interfaces/Reserva';
+import './styles/PainelDeControle.css';
 
 const PainelDeControle: React.FC = () => {
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'pendentes' | 'aprovados' | 'recusados' | 'finalizadas'>('pendentes');
+  const [selectedReserva, setSelectedReserva] = useState<Reserva | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,9 +69,8 @@ const PainelDeControle: React.FC = () => {
           }
         }
       );
-      setReservas((prevReservas) =>
-        prevReservas.map((reserva) => (reserva.id === id ? { ...reserva, status } : reserva))
-      );
+      fetchReservas(); 
+      setSelectedReserva(null);
     } catch (error) {
       console.error(`Erro ao atualizar status da reserva ${id}`, error);
     }
@@ -83,10 +84,15 @@ const PainelDeControle: React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      setReservas((prevReservas) => prevReservas.filter((reserva) => reserva.id !== id));
+      fetchReservas()
+      setSelectedReserva(null);
     } catch (error) {
       console.error(`Erro ao apagar reserva ${id}`, error);
     }
+  };
+
+  const closeModal = () => {
+    setSelectedReserva(null);
   };
 
   if (loading) {
@@ -96,9 +102,9 @@ const PainelDeControle: React.FC = () => {
   return (
     <main className="principaladm">
       <section className="admpanel">
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
         <h2>Solicitações de Agendamento</h2>
-        <button onClick={handleLogout}>Logout</button>
-        <div>
+        <div className="tabs">
           <button onClick={() => setSelectedTab('pendentes')} className={selectedTab === 'pendentes' ? 'active' : ''}>
             Pendentes
           </button>
@@ -113,68 +119,59 @@ const PainelDeControle: React.FC = () => {
           </button>
         </div>
         {reservas.length > 0 ? (
-          reservas.map((reserva) => (
-            <div key={reserva.id} className="solicitacoes">
-              <div className="solicitante_id">
-                <span>ID: {reserva.id}</span>
+          <div className="solicitacoes-container">
+            {reservas.map((reserva) => (
+              <div
+                key={reserva.id}
+                className="solicitacao"
+                onClick={() => setSelectedReserva(reserva)}
+              >
+                <div className="solicitacao-header">
+                  <span className="solicitacao-nome">{reserva.from_name}</span>
+                  <span className="solicitacao-tipo">{reserva.user_type}</span>
+                  <span className="solicitacao-horario">{reserva.horario}</span>
+                </div>
               </div>
-              <div className="solicitante">
-                <span>Nome: {reserva.from_name}</span>
-              </div>
-              <div className="solicitante_obs">
-                <span>Observações: {reserva.activity_nature}</span>
-              </div>
-              <div className="solicitante_email">
-                <span>Email: {reserva.email}</span>
-              </div>
-              <div className="solicitante_whatsapp">
-                <span>WhatsApp: {reserva.whatsapp}</span>
-              </div>
-              <div className="solicitante_tipo">
-                <span>Tipo de Usuário: {reserva.user_type}</span>
-              </div>
-              <div className="solicitante_detalhes">
-                <span>Detalhes do Projeto: {reserva.project_details}</span>
-              </div>
-              <div className="solicitante_alvo">
-                <span>Público-Alvo: {reserva.target_audience}</span>
-              </div>
-              <div className="solicitante_pessoas">
-                <span>Número de Pessoas: {reserva.number_of_people}</span>
-              </div>
-              <div className="solicitante_horario">
-                <span>Horário: {reserva.horario}</span>
-              </div>
-              <div className="solicitante_estacoes">
-                <span>Estações: {reserva.stations}</span>
-              </div>
-              <div className="solicitante_status">
-                <span>Status: {reserva.status}</span>
-              </div>
-              <div className="solicitante_criacao">
-                <span>Criado em: {new Date(reserva.created_at).toLocaleString()}</span>
-              </div>
-              <div className="solicitante_atualizacao">
-                <span>Atualizado em: {new Date(reserva.updated_at).toLocaleString()}</span>
-              </div>
-              {reserva.status === 'pendente' && (
-                <>
-                  <button onClick={() => updateReservaStatus(reserva.id, 'aprovado')}>Aprovar</button>
-                  <button onClick={() => updateReservaStatus(reserva.id, 'recusado')}>Recusar</button>
-                </>
-              )}
-              {reserva.status === 'aprovado' && (
-                <button onClick={() => updateReservaStatus(reserva.id, 'finalizado')}>Finalizar</button>
-              )}
-              {reserva.status === 'recusado' && (
-                <button onClick={() => deleteReserva(reserva.id)}>Apagar</button>
-              )}
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
           <p>Nenhuma solicitação encontrada.</p>
         )}
       </section>
+
+      {selectedReserva && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeModal}>×</button>
+            <h3>Detalhes da Solicitação</h3>
+            <p><strong>Nome:</strong> {selectedReserva.from_name}</p>
+            <p><strong>Email:</strong> {selectedReserva.email}</p>
+            <p><strong>WhatsApp:</strong> {selectedReserva.whatsapp}</p>
+            <p><strong>Tipo de Usuário:</strong> {selectedReserva.user_type}</p>
+            <p><strong>Detalhes do Projeto:</strong> {selectedReserva.project_details}</p>
+            <p><strong>Público-Alvo:</strong> {selectedReserva.target_audience}</p>
+            <p><strong>Número de Pessoas:</strong> {selectedReserva.number_of_people}</p>
+            <p><strong>Horário:</strong> {selectedReserva.horario}</p>
+            <p><strong>Estações:</strong> {selectedReserva.stations}</p>
+            <p><strong>Status:</strong> {selectedReserva.status}</p>
+            <p><strong>Criado em:</strong> {new Date(selectedReserva.created_at).toLocaleString()}</p>
+            <p><strong>Atualizado em:</strong> {new Date(selectedReserva.updated_at).toLocaleString()}</p>
+            {selectedReserva.status === 'pendente' && (
+              <>
+                <button className="aprovar" onClick={() => updateReservaStatus(selectedReserva.id, 'aprovado')}>Aprovar</button>
+                <button className="recusar" onClick={() => updateReservaStatus(selectedReserva.id, 'recusado')}>Recusar</button>
+              </>
+            )}
+          {selectedReserva.status === 'aprovado' && (
+              <button className="finalizar" onClick={() => updateReservaStatus(selectedReserva.id, 'finalizado')}>Finalizar</button>
+            )}
+          {selectedReserva.status === 'recusado' && (
+              <button className="apagar" onClick={() => deleteReserva(selectedReserva.id)}>Apagar</button>
+          )}
+
+          </div>
+        </div>
+      )}
     </main>
   );
 };

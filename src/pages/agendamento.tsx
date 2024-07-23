@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
+import InputMask from 'react-input-mask';
 import imagem1 from './styles/img1.png';
 import './styles/App.css';
 import { Footer } from '../components/components';
@@ -32,7 +34,7 @@ function Formulario() {
   const [minutos, setMinutos] = useState<string>('');
   const [stations, setStations] = useState<string[]>([]);
   const [notification, setNotification] = useState<string>('');
-  const minutosRef = useRef<HTMLInputElement>(null);
+  const minutosInputRef = useRef<HTMLInputElement>(null);
 
   function handleStationChange(e: React.ChangeEvent<HTMLInputElement>) {
     const station = e.target.value;
@@ -43,7 +45,7 @@ function Formulario() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (
@@ -73,10 +75,17 @@ function Formulario() {
       activity_nature: activityNature,
       project_details: projectDetails,
       target_audience: targetAudience,
-      number_of_people: numberOfPeople,
+      number_of_people: parseInt(numberOfPeople),
       horario: horario,
       stations: stations.join(', ')
     };
+
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/reservas`, templateParams);
+      setNotification('Agendamento realizado com sucesso!');
+    } catch (error) {
+      setNotification('Erro ao realizar o agendamento. Tente novamente.');
+    }
   }
 
   return (
@@ -87,10 +96,25 @@ function Formulario() {
         <input id="name" className='forminput' type='text' onChange={(e) => setName(e.target.value)} value={name} required />
 
         <label htmlFor="email">Qual o seu e-mail?</label>
-        <input id="email" className='forminput' type='email' onChange={(e) => setEmail(e.target.value)} value={email} required />
+        <InputMask
+          id="email"
+          className='forminput'
+          type='email'
+          mask=""
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          required
+        />
 
         <label htmlFor="whatsapp">Qual o número de WhatsApp?</label>
-        <input id="whatsapp" className='forminput' type='text' onChange={(e) => setWhatsapp(e.target.value)} value={whatsapp} required />
+        <InputMask
+          id="whatsapp"
+          className='forminput'
+          mask="(99) 99999-9999"
+          onChange={(e) => setWhatsapp(e.target.value)}
+          value={whatsapp}
+          required
+        />
 
         <label htmlFor="userType">Escolha a opção que você se enquadra:</label>
         <select id="userType" value={userType} onChange={(e) => setUserType(e.target.value)} required>
@@ -119,33 +143,40 @@ function Formulario() {
         <input id="targetAudience" className='forminput' type='text' onChange={(e) => setTargetAudience(e.target.value)} value={targetAudience} required />
 
         <label htmlFor="numberOfPeople">A sua atividade envolve quantas pessoas?</label>
-        <input id="numberOfPeople" className='forminput' type='text' onChange={(e) => setNumberOfPeople(e.target.value)} value={numberOfPeople} required />
+        <InputMask
+          id="numberOfPeople"
+          className='forminput'
+          mask="99"
+          onChange={(e) => setNumberOfPeople(e.target.value)}
+          value={numberOfPeople}
+          required
+        />
 
         <label>Escolha o horário desejado:</label>
         <div className="horario-inputs">
-          <input
+          <InputMask
             id="horas"
             className='horas-input'
             type='text'
+            mask="99"
             onChange={(e) => {
               setHoras(e.target.value);
               if (e.target.value.length === 2) {
-                minutosRef.current?.focus();
+                minutosInputRef.current?.focus();
               }
             }}
             value={horas}
-            maxLength={2}
             required
           />
           <span>:</span>
-          <input
+          <InputMask
             id="minutos"
-            ref={minutosRef}
+            inputRef={minutosInputRef}
             className='minutos-input'
             type='text'
+            mask="99"
             onChange={(e) => setMinutos(e.target.value)}
             value={minutos}
-            maxLength={2}
             required
           />
         </div>
