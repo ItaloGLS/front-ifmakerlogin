@@ -1,0 +1,117 @@
+.principaladm {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.admpanel {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.logout-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  background-color: #ff4c4c;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.tabs {
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  margin: 5px;
+  padding: 10px;
+  background-color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.solicitacoes-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.solicitacao {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.solicitacao-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 800px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+.modal-content button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 16px;
+}
+
+.modal-content button.aprovar {
+  background-color: #28a745;
+}
+
+.modal-content button.recusar {
+  background-color: #dc3545;
+}
+
+.modal-content button.finalizar {
+  background-color: #ffc107;
+}
+
+.modal-content button.apagar {
+  background-color: #dc3545;
+}
