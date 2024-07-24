@@ -67,6 +67,7 @@ export function Navbar() {
         <a className="navlink" href="/equipe">Equipe</a>
         <a className="navlink" id="nav  ref1" href="/">Estações</a>
         <a id="navref2" href="/">Atendimento</a>
+        <a id="navref2"  href="/paineldecontrole">Painel de Controle</a>
       </div>
     </nav>
   );
