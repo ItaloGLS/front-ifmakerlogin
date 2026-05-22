@@ -1,46 +1,369 @@
-# Getting Started with Create React App
+# 🔐 Frontend IFMaker Login - Autenticação em React
 
-This project was bootstrapped with [Create React App](https://raw.githubusercontent.com/ItaloGLS/front-ifmakerlogin/main/src/interfaces/front_ifmakerlogin_v2.0.zip).
+Interface de autenticação moderna para a plataforma IFMaker, desenvolvida em **React** e **TypeScript** com segurança avançada.
 
-## Available Scripts
+![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📋 Visão Geral
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Frontend responsável pela autenticação da plataforma IFMaker, com suporte a login, registro, recuperação de senha e gerenciamento de sessão.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### ✨ Características
 
-### `npm test`
+- ✅ Sistema de login seguro
+- ✅ Registro de novos usuários
+- ✅ Recuperação de senha
+- ✅ Validação em tempo real
+- ✅ JWT token management
+- ✅ Sessão persistente
+- ✅ Interface responsiva
+- ✅ Proteção contra CSRF
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://raw.githubusercontent.com/ItaloGLS/front-ifmakerlogin/main/src/interfaces/front_ifmakerlogin_v2.0.zip) for more information.
+---
 
-### `npm run build`
+## 🛠️ Tecnologias
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **React 18** - UI Library
+- **TypeScript** - Type Safety
+- **React Router v6** - Navigation
+- **Axios** - HTTP Client
+- **React Hook Form** - Validação
+- **Zod** - Schema Validation
+- **Tailwind CSS** - Estilização
+- **JWT** - Autenticação
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://raw.githubusercontent.com/ItaloGLS/front-ifmakerlogin/main/src/interfaces/front_ifmakerlogin_v2.0.zip) for more information.
+## 📂 Estrutura
 
-### `npm run eject`
+```
+front-ifmakerlogin/
+├── src/
+│   ├── components/
+│   │   ├── LoginForm/
+│   │   ├── RegisterForm/
+│   │   ├── ForgotPasswordForm/
+│   │   └── ProtectedRoute/
+│   ├── pages/
+│   │   ├── LoginPage/
+│   │   ├── RegisterPage/
+│   │   ├── ResetPasswordPage/
+│   │   └── DashboardPage/
+│   ├── services/
+│   │   ├── authService.ts
+│   │   ├── api.ts
+│   │   └── tokenManager.ts
+│   ├── hooks/
+│   │   ├── useAuth.ts
+│   │   └── useForm.ts
+│   ├── types/
+│   │   └── auth.ts
+│   ├── context/
+│   │   └── AuthContext.tsx
+│   ├── App.tsx
+│   └── index.tsx
+├── package.json
+├── tsconfig.json
+└── README.md
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 Como Usar
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 1️⃣ Clone
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+git clone https://github.com/ItaloGLS/front-ifmakerlogin.git
+cd front-ifmakerlogin
+```
 
-## Learn More
+### 2️⃣ Instale Dependências
 
-You can learn more in the [Create React App documentation](https://raw.githubusercontent.com/ItaloGLS/front-ifmakerlogin/main/src/interfaces/front_ifmakerlogin_v2.0.zip).
+```bash
+npm install
+```
 
-To learn React, check out the [React documentation](https://raw.githubusercontent.com/ItaloGLS/front-ifmakerlogin/main/src/interfaces/front_ifmakerlogin_v2.0.zip).
+### 3️⃣ Configure Variáveis
+
+```bash
+cat > .env << EOF
+REACT_APP_API_URL=http://localhost:5000
+REACT_APP_API_TIMEOUT=5000
+EOF
+```
+
+### 4️⃣ Execute
+
+```bash
+npm start
+```
+
+---
+
+## 🔐 Fluxo de Autenticação
+
+### Login
+
+```
+1. Usuário preenche email/senha
+2. Validação local (Zod schema)
+3. Envio para API
+4. Recebimento de JWT token
+5. Armazenamento seguro
+6. Redirecionamento para dashboard
+```
+
+### Registro
+
+```
+1. Usuário preenche formulário
+2. Validação em tempo real
+3. Envio para API
+4. Confirmação de email
+5. Redirecionamento para login
+```
+
+---
+
+## 📋 Modelos
+
+### User
+
+```typescript
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+  createdAt: Date;
+}
+```
+
+### Auth Response
+
+```typescript
+interface AuthResponse {
+  token: string;
+  refreshToken: string;
+  user: User;
+  expiresIn: number;
+}
+```
+
+### Login Credentials
+
+```typescript
+interface LoginCredentials {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
+```
+
+---
+
+## 🔑 Gerenciamento de Tokens
+
+### Salvar Token
+
+```typescript
+function saveToken(token: string, expiresIn: number) {
+  localStorage.setItem('token', token);
+  localStorage.setItem('tokenExpiry', Date.now() + expiresIn * 1000);
+}
+```
+
+### Recuperar Token
+
+```typescript
+function getToken(): string | null {
+  const token = localStorage.getItem('token');
+  const expiry = localStorage.getItem('tokenExpiry');
+  
+  if (!token || !expiry) return null;
+  
+  if (Date.now() > parseInt(expiry)) {
+    clearToken();
+    return null;
+  }
+  
+  return token;
+}
+```
+
+---
+
+## 🎯 Componentes Principais
+
+### LoginForm
+
+```typescript
+export const LoginForm: React.FC = () => {
+  const { login, isLoading } = useAuth();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    rememberMe: false
+  });
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await login(formData);
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* inputs */}
+    </form>
+  );
+};
+```
+
+### ProtectedRoute
+
+```typescript
+export const ProtectedRoute: React.FC<Props> = ({ children }) => {
+  const { user, isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  return children;
+};
+```
+
+---
+
+## 🧪 Validação
+
+### Schema Zod
+
+```typescript
+const loginSchema = z.object({
+  email: z.string().email('Email inválido'),
+  password: z.string().min(6, 'Mínimo 6 caracteres')
+});
+
+const registerSchema = z.object({
+  name: z.string().min(3, 'Mínimo 3 caracteres'),
+  email: z.string().email('Email inválido'),
+  password: z.string().min(8, 'Mínimo 8 caracteres'),
+  confirmPassword: z.string()
+}).refine(
+  data => data.password === data.confirmPassword,
+  { message: 'Senhas não correspondem' }
+);
+```
+
+---
+
+## 🎨 Design
+
+- Material Design 3
+- Cores: Azul profissional
+- Animações suaves
+- Dark mode ready
+- Responsivo
+
+---
+
+## 🔒 Segurança
+
+- ✅ Validação de email
+- ✅ Hash de senha
+- ✅ CSRF Protection
+- ✅ Rate limiting
+- ✅ Refresh tokens
+- ✅ Logout seguro
+- ✅ Session timeout
+
+---
+
+## 📡 API Endpoints
+
+```bash
+POST /auth/login
+POST /auth/register
+POST /auth/logout
+POST /auth/refresh
+POST /auth/forgot-password
+POST /auth/reset-password
+GET /auth/me
+```
+
+---
+
+## 🧪 Testes
+
+```bash
+# Testes unitários
+npm run test
+
+# Coverage
+npm run test:coverage
+
+# E2E
+npm run test:e2e
+```
+
+---
+
+## 🚢 Deploy
+
+### Vercel
+
+```bash
+vercel deploy
+```
+
+### Netlify
+
+```bash
+netlify deploy
+```
+
+---
+
+## 📈 Melhorias Futuras
+
+- [ ] OAuth2 (Google, GitHub)
+- [ ] 2FA (Two Factor Authentication)
+- [ ] Biometric login
+- [ ] Social login
+- [ ] Email verification
+- [ ] Session management
+- [ ] Device tracking
+
+---
+
+## 🐛 Issues
+
+Reporte bugs [aqui](https://github.com/ItaloGLS/front-ifmakerlogin/issues).
+
+---
+
+## 📝 Licença
+
+MIT License 📄
+
+---
+
+## 👨‍💻 Autor
+
+**Ítalo GLS** - [@ItaloGLS](https://github.com/ItaloGLS)
+
+---
+
+<div align="center">
+
+Frontend IFMaker Login: Autenticação Segura 🔐
+
+*Desenvolvido com segurança em primeiro lugar*
+
+</div>
